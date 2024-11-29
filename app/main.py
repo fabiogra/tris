@@ -26,7 +26,7 @@ def join_game(session_id):
 
 
 def _share_match(session_id):
-    base_url = str(current_url).split("?")[0].split("/component/")[0]
+    base_url = str(current_url).split("?")[0].split("/component/")[0].split("/~/")[0]
     
     # Construct the join URL
     join_url = f"{base_url}?{urlencode({'session_id': session_id})}"
