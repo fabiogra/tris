@@ -4,8 +4,8 @@ from urllib.parse import urlencode, quote_plus
 from streamlit_javascript import st_javascript
 import time
 from coolname import generate_slug
-from app.about import show_about
-from app.game import game_board, get_game_sessions, initialize_game
+from about import show_about
+from game import game_board, get_game_sessions, initialize_game
 from style import CSS_STYLE
 
 # Set page configuration
