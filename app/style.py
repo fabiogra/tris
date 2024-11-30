@@ -43,5 +43,13 @@ CSS_STYLE = """
         flex: 1 1 calc(33.3333% - 1rem) !important;
         min-width: calc(33% - 1rem) !important;
     }
+    
+    /* Improve segmented control */
+    [data-testid="stBaseButton-segmented_controlActive"], [data-testid="stBaseButton-segmented_control"] {
+        padding: 1.5rem 1rem !important;
+    }
+    [data-testid="stBaseButton-primary"] {
+        padding: 0rem 0rem !important;
+    }
     </style> 
     """

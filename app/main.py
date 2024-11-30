@@ -113,7 +113,7 @@ if 'session_id' in st.query_params and "session_id" not in st.session_state:
 
 
 
-cols = st.columns(3)
+cols = st.columns(3, gap="small")
 with cols[0]:
     if st.button("New Match", use_container_width=True, type="primary"):
         create_new_game(game_mode)
