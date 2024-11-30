@@ -8,9 +8,7 @@ from about import show_about
 from game import game_board, get_game_sessions, initialize_game
 from style import CSS_STYLE
 
-# Set page configuration
 st.set_page_config(page_title="Tris Multiplayer - Tic Tac Toe with Streamlit", page_icon="logotris-min.png", layout="centered", initial_sidebar_state="collapsed")
-st.logo(image="logotris-min.png", size="large")
 
 def join_game(session_id):
     game_sessions = get_game_sessions()
@@ -52,16 +50,19 @@ def _share_match(session_id):
     st.markdown(whatsapp_button, unsafe_allow_html=True)
 
 @st.dialog("Create a new game")
-def create_new_game():
+def create_new_game(game_mode="pvp"):
     session_id = generate_slug(2)
     game_sessions = get_game_sessions()
-    game_sessions[session_id] = initialize_game()
+    
+    game_sessions[session_id] = initialize_game(mode=game_mode)
     st.session_state.session_id = session_id
     st.query_params['session_id'] = session_id
     st.session_state.player_id = game_sessions[session_id]['player_x']
-    st.session_state.wait_to_start = True
-    st.success(f"Game created! Share the match name **{session_id}** or the link below with your friend:")
-    _share_match(session_id)
+    st.session_state.wait_to_start = game_mode == 'pvp'  # Don't wait for AI mode
+    
+    st.success(f"Game created! {' Share the match name **' + session_id + '** or the link below with your friend:' if game_mode == 'pvp' else ''}")
+    if game_mode == 'pvp':
+        _share_match(session_id)
         
 @st.dialog("Join an existing game")
 def join_existing_game():
@@ -80,11 +81,16 @@ def join_existing_game():
 def share_match():
     _share_match(st.session_state.session_id)
             
+current_url = st_javascript("window.location.href")
 
     
-# Game title
 st.title("Tris")
+st.logo(image="logotris-min.png", size="large", link="https://playtris.streamlit.app", icon_image="logotris-min.png")
+
 st.markdown("*A Tic Tac Toe Multiplayer game*")
+    
+game_mode = st.toggle("Play against AI 🤖", value=False)
+    
 msg_area = st.empty()
 if 'session_id' in st.query_params and "session_id" not in st.session_state:
     session_id = st.query_params['session_id']
@@ -97,13 +103,12 @@ if 'session_id' in st.query_params and "session_id" not in st.session_state:
     else:
         msg_area.error(f"Match name **{session_id}** not found. Please try again.")
 
-current_url = st_javascript("window.location.href")
 
 
 cols = st.columns(3)
 with cols[0]:
     if st.button("New Match", use_container_width=True, type="primary"):
-        create_new_game()
+        create_new_game("ai" if game_mode else "pvp")
         msg_area.empty()
 with cols[1]:
     if st.button("Join Match", use_container_width=True, type="primary"):
