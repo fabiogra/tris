@@ -8,7 +8,7 @@ from about import show_about
 from game import game_board, get_game_sessions, initialize_game
 from style import CSS_STYLE
 
-st.set_page_config(page_title="Tris Multiplayer - Tic Tac Toe with Streamlit", page_icon="logotris-min.png", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Tris Multiplayer - Tic Tac Toe with Streamlit", page_icon="logotris-min.png", layout="wide", initial_sidebar_state="collapsed")
 
 def join_game(session_id):
     game_sessions = get_game_sessions()
@@ -88,9 +88,17 @@ st.title("Tris")
 st.logo(image="logotris-min.png", size="large", link="https://playtris.streamlit.app", icon_image="logotris-min.png")
 
 st.markdown("*A Tic Tac Toe Multiplayer game*")
-    
-game_mode = st.toggle("Play against AI 🤖", value=False)
-    
+
+game_mode = st.segmented_control(
+    "Game Mode",
+    options=["pvp", "ai"],
+    default="pvp",
+    selection_mode="single",
+    format_func=lambda x: "Player vs Player 🤝" if x == "pvp" else "Play against AI 🤖",
+    key="game_mode",
+    label_visibility="hidden"
+) 
+
 msg_area = st.empty()
 if 'session_id' in st.query_params and "session_id" not in st.session_state:
     session_id = st.query_params['session_id']
@@ -108,7 +116,7 @@ if 'session_id' in st.query_params and "session_id" not in st.session_state:
 cols = st.columns(3)
 with cols[0]:
     if st.button("New Match", use_container_width=True, type="primary"):
-        create_new_game("ai" if game_mode else "pvp")
+        create_new_game(game_mode)
         msg_area.empty()
 with cols[1]:
     if st.button("Join Match", use_container_width=True, type="primary"):
